@@ -1,0 +1,11 @@
+[Unit]
+Description=Inspur Assets Daemon
+After=mapper-wait@-xyz-openbmc_project-state-host.service
+
+[Service]
+Restart=always
+RestartSec=5
+ExecStart=@sbindir@/inspur-bios-switch
+
+[Install]
+WantedBy=multi-user.target
