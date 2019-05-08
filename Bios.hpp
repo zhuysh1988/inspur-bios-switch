@@ -25,15 +25,18 @@ class Bios : public BiosObject
          sdeventplus::Event& event) :
         BiosObject(bus, path.c_str())
     {
-      BiosObject::timeout(600);
+      BiosObject::timeout(1200);
       BiosObject::isChanged(false);
-      BiosObject::autoSwitch(false);
-      void initBiosPresent();
+      BiosObject::autoSwitch(getSwitchMod());
+      BiosObject::runningIndex(initBiosPresent());
     }
 
+  bool autoSwitch(bool value) override;
+  std::string runningIndex(std::string value) override;
 
   private:
-    void initBiosPresent();
+    std::string initBiosPresent();
+    bool getSwitchMod();
 };
 } // namespace bios
 } // namespace biossswitch

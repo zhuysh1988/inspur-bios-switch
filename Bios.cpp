@@ -6,6 +6,7 @@
 #include <string>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string.hpp>
+#include <stdio.h>
 
 namespace inspur
 {
@@ -15,11 +16,13 @@ namespace bios
 {
 // using json = nlohmann::json;
 
-void Bios::initBiosPresent()
+std::string Bios::initBiosPresent()
 {
+
     char cmd[16]="biostool.sh -p";
     char result[32]="";
     FILE* fp = NULL;
+    std::string biosId = "1";
     if ((fp = popen(cmd, "r")) != NULL)
     {
         fread(result, 1, sizeof(result) - 1, fp);
@@ -30,13 +33,59 @@ void Bios::initBiosPresent()
         {
             std::vector<std::string> b_data;
             boost::split(b_data, result, boost::is_any_of(":"));
-            std::string biosId = boost::replace_all_copy(b_data[1], " ", "");
-            BiosObject::runningIndex(biosId);
+            biosId = boost::replace_all_copy(b_data[1], " ", "");
         }
-
     }
+    return boost::replace_all_copy(biosId, "\n", "");;
 }
 
+bool Bios::getSwitchMod()
+{
+    bool switchMod = false;
+    std::ifstream infile;
+    infile.open("/etc/inspur-config/inspur-bios-switch", std::ios::in);
+    char readinfo[4];
+    while (!infile.eof())
+    {
+        infile >> readinfo;
+    }
+    infile.close();
+    if (atoi(readinfo) == 1)
+    {
+        switchMod = true;
+    }
+
+    return switchMod;
+}
+
+bool Bios::autoSwitch(bool value)
+{
+    // 写文件
+    int mode = value ? 1 :0;
+    char cmd[64];
+    sprintf(cmd, "echo %d > /etc/inspur-config/inspur-bios-switch", mode);
+    int result = std::system(cmd);
+    if (result)
+    {
+        std::fprintf(stderr, "set switch mod error! \n");
+        value = !value;
+    }
+
+    return BiosObject::autoSwitch(value);
+}
+
+std::string Bios::runningIndex(std::string value)
+{
+    char cmd[64];
+    sprintf(cmd, "biostool.sh -s");
+    int result = std::system(cmd);
+    if (result)
+    {
+        std::fprintf(stderr, "set bios error! \n");
+    }
+
+    return BiosObject::runningIndex(value);
+}
 // uint32_t runningIndex(uint32_t value)
 // {
 //     return BiosObject::runningIndex;
