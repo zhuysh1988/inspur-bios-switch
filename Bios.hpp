@@ -25,7 +25,7 @@ class Bios : public BiosObject
          sdeventplus::Event& event) :
         BiosObject(bus, path.c_str())
     {
-      BiosObject::timeout(1200);
+      BiosObject::timeout(600);
       BiosObject::isChanged(false);
       BiosObject::autoSwitch(getSwitchMod());
       BiosObject::runningIndex(initBiosPresent());

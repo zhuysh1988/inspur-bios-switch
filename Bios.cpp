@@ -7,6 +7,7 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string.hpp>
 #include <stdio.h>
+#include <thread>
 
 namespace inspur
 {
@@ -86,6 +87,46 @@ std::string Bios::runningIndex(std::string value)
 
     return BiosObject::runningIndex(value);
 }
+
+// void Bios::monitorThread()
+// {
+//     bool biosMod = Bios::getSwitchMod();
+//     if (biosMod)
+//     {
+//         std::cout << "Bios::monitor start ..." << std::endl;
+//         int time = BiosObject::timeout();
+//         int wait = 0;
+//         bool powerOn = false;
+//         while (wait <= time)
+//         {
+//             std::cout << "Bios::monitor start for : " << wait << std::endl;
+//             biosMod = Bios::getSwitchMod();
+//             if (!biosMod)
+//             {
+//                 break;
+//             }
+//             sleep(3);
+//             wait += 3;
+//             // IF POWER ON
+//             if (powerOn)
+//             {
+//                 break;
+//             } 
+//         }
+//         if (!powerOn)
+//         {
+//             BiosObject::isChanged(true);
+//             BiosObject::runningIndex("1");
+//             // reboot
+//         }
+//     }
+// }
+
+// void Bios::monitor()
+// {
+//     std::thread t (Bios::monitorThread);
+//     t.join();
+// }
 // uint32_t runningIndex(uint32_t value)
 // {
 //     return BiosObject::runningIndex;
